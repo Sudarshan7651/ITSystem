@@ -141,6 +141,16 @@
             &nbsp;·&nbsp;
             <a href="{{ route('student.login') }}">Student</a>
         </div>
+
+        <div class="divider"></div>
+        <div class="links">
+            <p style="color: rgba(255,255,255,0.35);">
+            admin@internship.com
+            <br>
+            Admin@1234
+            </p>
+        </div>
+       
     </div>
 </body>
 </html>

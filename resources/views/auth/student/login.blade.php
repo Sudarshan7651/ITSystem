@@ -143,7 +143,9 @@
             <a href="{{ route('admin.login') }}">Admin</a>
             &nbsp;·&nbsp;
             <a href="{{ route('teacher.login') }}">Teacher</a>
-        </div>
+
+        
+       
     </div>
 </body>
 </html>

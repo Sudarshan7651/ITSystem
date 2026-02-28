@@ -141,6 +141,7 @@
             &nbsp;·&nbsp;
             <a href="{{ route('student.login') }}">Student</a>
         </div>
+        
     </div>
 </body>
 </html>
