@@ -1,0 +1,21 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
+class College extends Model
+{
+    protected $fillable = ['name', 'short_name', 'location', 'status'];
+
+    public function departments(): HasMany
+    {
+        return $this->hasMany(Department::class);
+    }
+
+    public function students(): HasMany
+    {
+        return $this->hasMany(User::class, 'college_id');
+    }
+}
