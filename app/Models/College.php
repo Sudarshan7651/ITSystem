@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class College extends Model
+class College extends Model 
 {
     protected $fillable = ['name', 'short_name', 'location', 'status'];
 

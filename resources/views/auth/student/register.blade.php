@@ -119,15 +119,27 @@
     </style>
 </head>
 <body>
+@php
+    $jsDepartments = $departments->map(function($d) {
+        return ['id' => $d->id, 'name' => $d->name, 'college_id' => $d->college_id];
+    })->values();
+    $jsCourses = $courses->map(function($c) {
+        return ['id' => $c->id, 'name' => $c->name, 'department_id' => $c->department_id];
+    })->values();
+    $jsClasses = $classes->map(function($cl) {
+        return ['id' => $cl->id, 'name' => $cl->name, 'label' => $cl->label, 'course_id' => $cl->course_id];
+    })->values();
+@endphp
 <script>
-    const ALL_DEPARTMENTS = @json($departments->map(fn($d) => ['id' => $d->id, 'name' => $d->name, 'college_id' => $d->college_id]));
-    const ALL_COURSES     = @json($courses->map(fn($c) => ['id' => $c->id, 'name' => $c->name, 'department_id' => $c->department_id]));
+    const ALL_DEPARTMENTS = {!! json_encode($jsDepartments) !!};
+    const ALL_COURSES     = {!! json_encode($jsCourses) !!};
+    const ALL_CLASSES     = {!! json_encode($jsClasses) !!};
 </script>
 <div class="card">
     <div class="badge">Student Registration</div>
     <h1>Create your account</h1>
     <p class="subtitle">Register to access the Internship Tracking System</p>
-    <div class="notice">⏳ After registration, your account requires <strong>admin approval</strong> before you can log in.</div>
+    <div class="notice">⏳ After registration, your account requires <strong>Teacher approval</strong> before you can log in.</div>
     @if ($errors->any())
         <div class="alert-error">
             <ul style="list-style:none;">
@@ -185,21 +197,19 @@
         </div>
         <div class="form-group">
             <label for="s_course_id">Course</label>
-            <select id="s_course_id" name="course_id" required disabled>
+            <select id="s_course_id" name="course_id" required disabled onchange="onCourseChange(this.value)">
                 <option value="" disabled selected>— Select department first —</option>
             </select>
             <span class="select-hint" id="course_hint">Select a department first.</span>
             @error('course_id') <span class="input-error">{{ $message }}</span> @enderror
         </div>
         <div class="form-group">
-            <label for="s_year">Year of Study</label>
-            <select id="s_year" name="year" required>
-                <option value="" disabled {{ old('year') ? '' : 'selected' }}>— Select year —</option>
-                @for ($y = 1; $y <= 6; $y++)
-                    <option value="{{ $y }}" {{ old('year') == $y ? 'selected' : '' }}>Year {{ $y }}</option>
-                @endfor
+            <label for="s_class_id">Year of Study</label>
+            <select id="s_class_id" name="class_id" required disabled>
+                <option value="" disabled selected>— Select course first —</option>
             </select>
-            @error('year') <span class="input-error">{{ $message }}</span> @enderror
+            <span class="select-hint" id="class_hint">Select a course first.</span>
+            @error('class_id') <span class="input-error">{{ $message }}</span> @enderror
         </div>
         <div class="section-label" style="margin-top:4px;">Password</div>
         <div class="form-row">
@@ -220,10 +230,13 @@
 <script>
     const deptSelect   = document.getElementById('s_department_id');
     const courseSelect = document.getElementById('s_course_id');
+    const classSelect  = document.getElementById('s_class_id');
     const deptHint     = document.getElementById('dept_hint');
     const courseHint   = document.getElementById('course_hint');
+    const classHint    = document.getElementById('class_hint');
     const oldDeptId    = "{{ old('department_id') }}";
     const oldCourseId  = "{{ old('course_id') }}";
+    const oldClassId   = "{{ old('class_id') }}";
     const oldCollegeId = "{{ old('college_id') }}";
 
     function buildOption(value, text, selected = false) {
@@ -241,8 +254,10 @@
         const filtered = ALL_DEPARTMENTS.filter(d => d.college_id == collegeId);
         resetSelect(deptSelect, '— Select department —');
         resetSelect(courseSelect, '— Select department first —');
-        deptHint.textContent = filtered.length ? '' : 'No departments available.';
+        resetSelect(classSelect, '— Select course first —');
+        deptHint.textContent   = filtered.length ? '' : 'No departments available.';
         courseHint.textContent = 'Select a department first.';
+        classHint.textContent  = 'Select a course first.';
         if (!filtered.length) return;
         filtered.forEach(d => deptSelect.appendChild(buildOption(d.id, d.name, d.id == oldDeptId)));
         deptSelect.disabled = false;
@@ -251,10 +266,25 @@
     function onDepartmentChange(deptId) {
         const filtered = ALL_COURSES.filter(c => c.department_id == deptId);
         resetSelect(courseSelect, '— Select course —');
+        resetSelect(classSelect, '— Select course first —');
         courseHint.textContent = filtered.length ? '' : 'No courses available.';
+        classHint.textContent  = 'Select a course first.';
         if (!filtered.length) return;
         filtered.forEach(c => courseSelect.appendChild(buildOption(c.id, c.name, c.id == oldCourseId)));
         courseSelect.disabled = false;
+        courseSelect.onchange = () => onCourseChange(courseSelect.value);
+        if (oldCourseId && filtered.some(c => c.id == oldCourseId)) onCourseChange(oldCourseId);
+    }
+    function onCourseChange(courseId) {
+        const filtered = ALL_CLASSES.filter(cl => cl.course_id == courseId);
+        resetSelect(classSelect, '— Select year —');
+        classHint.textContent = filtered.length ? '' : 'No classes found for this course.';
+        if (!filtered.length) return;
+        filtered.forEach(cl => {
+            const label = cl.label ? `${cl.name} (${cl.label})` : cl.name;
+            classSelect.appendChild(buildOption(cl.id, label, cl.id == oldClassId));
+        });
+        classSelect.disabled = false;
     }
     document.addEventListener('DOMContentLoaded', function () {
         if (oldCollegeId) onCollegeChange(oldCollegeId);

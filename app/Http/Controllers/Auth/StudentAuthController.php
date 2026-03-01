@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\ClassYear;
 use App\Models\College;
 use App\Models\Department;
 use App\Models\Course;
@@ -67,12 +68,12 @@ class StudentAuthController extends Controller
      */
     public function showRegister(): View
     {
-        // Load all colleges with their departments and courses eagerly
         $colleges    = College::where('status', 'active')->orderBy('name')->get();
         $departments = Department::where('status', 'active')->orderBy('name')->get();
         $courses     = Course::where('status', 'active')->orderBy('name')->get();
+        $classes     = ClassYear::where('status', 'active')->get();
 
-        return view('auth.student.register', compact('colleges', 'departments', 'courses'));
+        return view('auth.student.register', compact('colleges', 'departments', 'courses', 'classes'));
     }
 
     /**
@@ -87,8 +88,8 @@ class StudentAuthController extends Controller
             'college_id'    => ['required', 'integer', 'exists:colleges,id'],
             'department_id' => ['required', 'integer', 'exists:departments,id'],
             'course_id'     => ['required', 'integer', 'exists:courses,id'],
+            'class_id'      => ['required', 'integer', 'exists:classes,id'],
             'roll_number'   => ['required', 'string', 'max:50', 'unique:users,roll_number'],
-            'year'          => ['required', 'integer', 'min:1', 'max:6'],
             'phone'         => ['required', 'string', 'max:20'],
         ]);
 
@@ -100,15 +101,15 @@ class StudentAuthController extends Controller
             'college_id'    => $request->college_id,
             'department_id' => $request->department_id,
             'course_id'     => $request->course_id,
+            'class_id'      => $request->class_id,
             'roll_number'   => $request->roll_number,
-            'year'          => $request->year,
             'phone'         => $request->phone,
             'status'        => 'active',
             'is_approved'   => 'not_approved',
         ]);
 
         return redirect()->route('student.login')
-            ->with('success', 'Registration successful! Your account is pending admin approval. You will be notified once approved.');
+            ->with('success', 'Registration successful! Your account is pending Teacher approval. You will be notified once approved.');
     }
 
     /**

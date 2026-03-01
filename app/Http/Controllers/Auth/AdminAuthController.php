@@ -59,7 +59,15 @@ class AdminAuthController extends Controller
      */
     public function dashboard(): View
     {
-        return view('admin.dashboard');
+        $stats = [
+            'colleges'   => \App\Models\College::count(),
+            'departments'=> \App\Models\Department::count(),
+            'teachers'   => \App\Models\User::where('role', 'teacher')->count(),
+            'courses'    => \App\Models\Course::count(),
+            'students'   => \App\Models\User::where('role', 'student')->count(),
+            'pending'    => \App\Models\User::where('role', 'student')->where('is_approved', 'not_approved')->count(),
+        ];
+        return view('admin.dashboard', compact('stats'));
     }
 
     /**

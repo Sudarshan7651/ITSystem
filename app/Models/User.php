@@ -21,22 +21,14 @@ class User extends Authenticatable
         'role',
         'status',
         'profile_photo',
-
-        // Student — college
-        'college_id',
-
-        // Teacher & Student
-        'department_id',
-        'phone',
-
-        // Teacher only
-        'employee_id',
-
-        // Student only
-        'course_id',
-        'roll_number',
-        'year',
-        'is_approved',
+        'college_id',// Student — college
+        'department_id',// Teacher & Student
+        'phone',// Teacher & Student
+        'employee_id',// Teacher only
+        'course_id',// Student only
+        'roll_number',// Student only
+        'year',// Student only
+        'is_approved',// Student only
     ];
 
     protected $hidden = [
@@ -52,7 +44,7 @@ class User extends Authenticatable
         ];
     }
 
-    // ─── Relationships ───────────────────────────────────────────────────────────
+    // ─── Relationships
 
     public function college(): BelongsTo
     {
@@ -69,7 +61,7 @@ class User extends Authenticatable
         return $this->belongsTo(Course::class);
     }
 
-    // ─── Role Helpers ────────────────────────────────────────────────────────────
+    // ─── Role Helpers
 
     public function isAdmin(): bool
     {

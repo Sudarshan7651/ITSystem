@@ -15,6 +15,11 @@ class Course extends Model
         return $this->belongsTo(Department::class);
     }
 
+    public function classes(): HasMany
+    {
+        return $this->hasMany(ClassYear::class);
+    }
+
     public function students(): HasMany
     {
         return $this->hasMany(User::class, 'course_id');
