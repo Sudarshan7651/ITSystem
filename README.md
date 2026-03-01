@@ -1,59 +1,225 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🎓 Internship Tracking System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A full-featured **web application** built with **Laravel 12** to manage and track student internships across colleges, departments, courses, and class years. The system provides role-based access for **Admins**, **Teachers**, and **Students** — each with their own dedicated dashboard and functionality.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🚀 Features
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 👤 Multi-Role Authentication
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Admin** — Full control over the system via a dedicated admin panel
+- **Teacher** — Department-level access with profile management
+- **Student** — Self-registration with Teacher approval workflow
 
-## Learning Laravel
+### 🏛️ Admin Panel
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+- Manage **Colleges** (add, edit, delete, status toggle)
+- Manage **Departments** (linked to colleges)
+- Manage **Courses** (linked to departments)
+- Manage **Class Years** (e.g. FY, SY, TY — linked to courses)
+- Manage **Subjects** (linked to class years, supports Theory / Practical / Elective types)
+- Manage **Teachers** (create accounts, assign departments)
+- Cascading dropdown filters across all management pages
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 🎓 Student Portal
 
-## Laravel Sponsors
+- Self-registration with college, department, course & year selection
+- Accounts require **Teacher approval** before access is granted
+- Profile management (name, phone, profile photo, password)
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 👨‍🏫 Teacher Portal
 
-### Premium Partners
+- Login and personal dashboard
+- Profile management (name, phone, profile photo, password)
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+---
 
-## Contributing
+## 🛠️ Tech Stack
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+| Layer              | Technology                                                 |
+| ------------------ | ---------------------------------------------------------- |
+| **Framework**      | Laravel 12 (PHP 8.2+)                                      |
+| **Frontend**       | Blade Templates, Vanilla CSS, Vanilla JS                   |
+| **Authentication** | Laravel Breeze (session-based) + custom role middleware    |
+| **Database**       | MySQL (via WAMP)                                           |
+| **API Tokens**     | Laravel Sanctum                                            |
+| **UI Design**      | Custom dark-mode design system (glassmorphism, Inter font) |
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## 📁 Project Structure
 
-## Security Vulnerabilities
+```
+app/
+├── Http/
+│   ├── Controllers/
+│   │   ├── Admin/           # College, Department, Course, Subject, Teacher, ClassYear controllers
+│   │   ├── Auth/            # Admin, Teacher, Student auth controllers
+│   │   ├── StudentProfileController.php
+│   │   └── TeacherProfileController.php
+│   └── Middleware/          # Role-based guards (admin, teacher, student)
+├── Models/
+│   ├── User.php             # Unified user model (admin / teacher / student)
+│   ├── College.php
+│   ├── Department.php
+│   ├── Course.php
+│   ├── ClassYear.php
+│   └── Subject.php
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+database/
+├── migrations/              # All table schemas
+└── seeders/
+    ├── AdminSeeder.php      # Default superadmin account
+    └── CollegeDepartmentCourseSeeder.php
 
-## License
+resources/views/
+├── admin/                   # Admin panel views (dashboard, colleges, departments, courses, subjects, teachers)
+├── teacher/                 # Teacher dashboard
+├── student/                 # Student dashboard
+└── auth/                    # Login & registration pages
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+routes/
+└── web.php                  # All routes grouped by role prefix
+```
+
+---
+
+## 🗃️ Database Schema
+
+```
+colleges        → id, name, short_name, status
+departments     → id, college_id, name, short_name, status
+courses         → id, department_id, name, short_name, status
+classes         → id, course_id, name (FY/SY/TY), label, status
+subjects        → id, class_id, name, code, type (theory/practical/elective), status
+users           → id, name, email, password, role, status, profile_photo,
+                  college_id, department_id, course_id, class_id,
+                  roll_number, year, employee_id, phone, is_approved
+```
+
+---
+
+## ⚙️ Installation & Setup
+
+### Prerequisites
+
+- PHP 8.2+
+- Composer
+- Node.js & npm
+- MySQL (WAMP / XAMPP / Laravel Herd)
+
+### Steps
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/Sudarshan7651/ITSystem.git
+cd ITSystem
+
+# 2. Install PHP dependencies
+composer install
+
+# 3. Install Node dependencies
+npm install
+
+# 4. Create environment file
+cp .env.example .env
+
+# 5. Generate application key
+php artisan key:generate
+
+# 6. Configure your database in .env
+DB_DATABASE=your_database_name
+DB_USERNAME=root
+DB_PASSWORD=
+
+# 7. Run migrations
+php artisan migrate
+
+# 8. Seed the database (creates default admin + sample data)
+php artisan db:seed
+
+# 9. Build frontend assets
+npm run build
+
+# 10. Start the development server
+php artisan serve
+```
+
+---
+
+## 🔐 Default Credentials
+
+| Role           | Email             | Password   |
+| -------------- | ----------------- | ---------- |
+| **Superadmin** | `admin@admin.com` | `password` |
+
+> ⚠️ Change the default admin password immediately after first login in a production environment.
+
+---
+
+## 🌐 Application URLs
+
+| Portal            | URL                                       |
+| ----------------- | ----------------------------------------- |
+| Home / Landing    | `http://localhost:8000/`                  |
+| Admin Login       | `http://localhost:8000/admin/login`       |
+| Admin Dashboard   | `http://localhost:8000/admin/dashboard`   |
+| Teacher Login     | `http://localhost:8000/teacher/login`     |
+| Teacher Dashboard | `http://localhost:8000/teacher/dashboard` |
+| Student Login     | `http://localhost:8000/student/login`     |
+| Student Register  | `http://localhost:8000/student/register`  |
+| Student Dashboard | `http://localhost:8000/student/dashboard` |
+
+---
+
+## 📋 Admin Panel Routes
+
+| Resource    | Routes               |
+| ----------- | -------------------- |
+| Colleges    | `/admin/colleges`    |
+| Departments | `/admin/departments` |
+| Courses     | `/admin/courses`     |
+| Class Years | `/admin/classes`     |
+| Subjects    | `/admin/subjects`    |
+| Teachers    | `/admin/teachers`    |
+
+---
+
+## 🔒 Role & Middleware System
+
+The application uses **session-based authentication** with custom middleware for role enforcement:
+
+- `auth` — Ensures the user is logged in
+- `admin` — Restricts access to admin users only
+- `teacher` — Restricts access to teacher users only
+- `student` — Restricts access to approved student users only
+
+Students must be **approved by an admin** (`is_approved = 'approved'`) before they can log in and access their dashboard.
+
+---
+
+## 🎨 Design System
+
+- **Theme:** Dark mode with custom glassmorphism elements
+- **Font:** [Inter](https://fonts.google.com/specimen/Inter) via Google Fonts
+- **Color Palette:** Dark backgrounds (`#0e0e10`, `#151517`) with white text and accent colors
+- **Components:** Custom form cards, filter bars, badge pills, cascading dropdowns, type selector pills
+- **Animations:** Subtle hover transitions on all interactive elements
+
+---
+
+## 📌 To-Do / Planned Features
+
+- [ ] Student internship submission & tracking
+- [ ] Teacher internship review & grading
+- [ ] Teacher approval dashboard for student registrations
+- [ ] Internship reports & export (PDF / Excel)
+- [ ] Email notifications for approvals and updates
+- [ ] Student ↔ Class Year assignment by Teacher
+
+---
+
+## 📄 License
+
+This project is open-sourced under the [MIT License](LICENSE).
